@@ -50,6 +50,7 @@ def main(init_addr):
     usr_2_name = oh.read_addr(init_addr + "_usr2_name")
     curr_addr = init_addr
     for i in range(rounds):
+        judgment = ""
         question, answer = game_func(inputs.inpt_dict)
         usr1 = oh.generate_random_sequence(10)
         usr2 = oh.generate_random_sequence(10)
@@ -70,18 +71,24 @@ def main(init_addr):
         r1_res, r2_res = json.loads(json.loads(r1.text)["content"]), json.loads(json.loads(r2.text)["content"])
         if float(r1_res["input"]) == float(answer) and float(r2_res["input"]) != float(answer):
             usr1_score += 1
+            judgment = "point to %s"%usr_1_name
         elif float(r1_res["input"]) != float(answer) and float(r2_res["input"]) == float(answer):
             usr2_score += 1
+            judgment = "point to %s"%usr_2_name
         elif  float(r1_res["input"]) == float(answer) and float(r2_res["input"]) == float(answer):
             t1, t2 = r1_res["time"], r2_res["time"]
             if t1 < t2:
                 usr1_score += 1
+                judgment = "point to %s"%usr_1_name
             elif t1 > t2:
                 usr2_score += 1
+                judgment = "point to %s"%usr_2_name
             else:
                 usr_1_score += 0.5
                 usr_2_score += 0.5
-                
+                judgment = "half a point to both players."
+        
+        oh.create_new_file(judgment, curr_addr + "_judgement")   
         
         curr_addr = next_addr
     
@@ -120,3 +127,4 @@ def main_usr():
     
 while True:
     main_usr()
+    print()

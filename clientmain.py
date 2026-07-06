@@ -35,11 +35,18 @@ def main(init_addr, name):
     else:
         print("Incorrect. The answer was %s"%answer)
     
-    print("Input took %d seconds"%(round((end - st))))    
-    curr_addr = next_addr
-    while requests.get(url + "/" + curr_addr).status_code != 200:
+    print("Input took %d seconds"%(round((end - st))))  
+    
+    
+    while requests.get(url + "/" + next_addr).status_code != 200:
         time.sleep(0.1)
     
+    while requests.get(url + "/" + curr_addr + "_judgement").status_code != 200:
+            time.sleep(0.1) 
+        
+    judgment = oh.read_addr(curr_addr + "_judgement")
+    print(judgment)  
+    curr_addr = next_addr
     for i in range(rounds - 1):
         r = requests.get(url + "/" + curr_addr)
         while r.status_code != 200:
@@ -62,10 +69,18 @@ def main(init_addr, name):
         else:
             print("Incorrect. The answer was %s"%answer)
         
-        print("Input took %d seconds"%(round((end - st))))  
-        curr_addr = next_addr
-        while requests.get(url + "/" + curr_addr).status_code != 200:
+        print("Input took %d seconds"%(round((end - st)))) 
+        
+        
+        while requests.get(url + "/" + next_addr).status_code != 200:
             time.sleep(0.1)
+        
+        while requests.get(url + "/" + curr_addr + "_judgement").status_code != 200:
+            pass
+        
+        judgment = oh.read_addr(curr_addr + "_judgement")
+        print(judgment)
+        curr_addr = next_addr
     
     time.sleep(1)
     res_dict = json.loads(oh.read_addr(fin_addr))
