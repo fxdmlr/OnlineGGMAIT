@@ -2,7 +2,7 @@ import gamehandler as gh
 
 menu_items = [
     '(1) Regular Multiplication',
-    '(2) Root finding (Resault integer)',
+    '(2) Root finding (Result integer)',
     '(3) Regular root finding',
     '(4) Matrix Determinant',
     '(5) Regular Division',
@@ -12,6 +12,12 @@ menu_items = [
 
 GAMES = [
     gh.regMul,
+    gh.introot,
+    gh.regroot,
+    gh.detgame,
+    gh.regDiv,
+    gh.funMul,
+    gh.matMul,
 ]
 
 GAME_PARAMS = [

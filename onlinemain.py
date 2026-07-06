@@ -5,6 +5,7 @@ import json
 import requests
 import screens
 import random
+import time
 
 url = 'https://guardts.ir/api/pastes'
 
@@ -14,6 +15,37 @@ def main(init_addr):
     usr1_score = 0
     usr2_score = 0
     finish_addr = oh.generate_random_sequence(10)
+    
+    r_usr1_name = requests.get(url + "/" + init_addr + "_usr1_name")
+    usr_1_name_flag = False
+    if r_usr1_name.status_code == 200:
+        usr_1_name = oh.read_addr(init_addr + "_usr1_name")
+        print("%s has joined the room!"%usr_1_name)
+        usr_1_name_flag = True
+        
+    r_usr2_name = requests.get(url + "/" + init_addr + "_usr2_name")
+    usr_2_name_flag = False
+    if r_usr2_name.status_code == 200:
+        usr_2_name = oh.read_addr(init_addr + "_usr2_name")
+        print("%s has joined the room!"%usr_2_name)
+        usr_2_name_flag = True
+        
+    while r_usr1_name.status_code != 200 or r_usr2_name.status_code != 200:
+        r_usr1_name = requests.get(url + "/" + init_addr + "_usr1_name")
+        if r_usr1_name.status_code == 200 and not usr_1_name_flag:
+            usr_1_name = oh.read_addr(init_addr + "_usr1_name")
+            print("%s has joined the room!"%usr_1_name)
+            usr_1_name_flag = True
+            
+        r_usr2_name = requests.get(url + "/" + init_addr + "_usr2_name")
+
+        if r_usr2_name.status_code == 200 and not usr_2_name_flag:
+            usr_2_name = oh.read_addr(init_addr + "_usr2_name")
+            print("%s has joined the room!"%usr_2_name)
+            usr_2_name_flag = True
+        
+        time.sleep(0.1)
+    
     usr_1_name = oh.read_addr(init_addr + "_usr1_name")
     usr_2_name = oh.read_addr(init_addr + "_usr2_name")
     curr_addr = init_addr
@@ -33,13 +65,14 @@ def main(init_addr):
         r1, r2 = requests.get(url + "/" + usr1), requests.get(url + "/" + usr2)
         while not (r1.status_code == 200 and r2.status_code == 200):
             r1, r2 = requests.get(url + "/" + usr1), requests.get(url + "/" + usr2)
+            time.sleep(0.1)
         
         r1_res, r2_res = json.loads(json.loads(r1.text)["content"]), json.loads(json.loads(r2.text)["content"])
-        if r1_res["input"] == answer and r2_res["input"] != answer:
+        if float(r1_res["input"]) == float(answer) and float(r2_res["input"]) != float(answer):
             usr1_score += 1
-        elif r1_res["input"] != answer and r2_res["input"] == answer:
+        elif float(r1_res["input"]) != float(answer) and float(r2_res["input"]) == float(answer):
             usr2_score += 1
-        elif  r1_res["input"] == answer and r2_res["input"] == answer:
+        elif  float(r1_res["input"]) == float(answer) and float(r2_res["input"]) == float(answer):
             t1, t2 = r1_res["time"], r2_res["time"]
             if t1 < t2:
                 usr1_score += 1

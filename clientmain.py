@@ -35,10 +35,10 @@ def main(init_addr, name):
     else:
         print("Incorrect. The answer was %s"%answer)
     
-    print("Input took %d seconds"%(round((end - st)/1000)))    
+    print("Input took %d seconds"%(round((end - st))))    
     curr_addr = next_addr
     while requests.get(url + "/" + curr_addr).status_code != 200:
-        pass
+        time.sleep(0.1)
     
     for i in range(rounds - 1):
         r = requests.get(url + "/" + curr_addr)
@@ -57,15 +57,15 @@ def main(init_addr, name):
         usr_inp = input(question)
         end = time.time()
         oh.create_new_file(json.dumps({"input" : usr_inp, "time" : time.time()}), game_dict[me])
-        if usr_inp == answer:
+        if float(usr_inp) == float(answer):
             print("Correct.")
         else:
             print("Incorrect. The answer was %s"%answer)
         
-        print("Input took %d seconds"%(round((end - st)/1000)))  
+        print("Input took %d seconds"%(round((end - st))))  
         curr_addr = next_addr
         while requests.get(url + "/" + curr_addr).status_code != 200:
-            pass
+            time.sleep(0.1)
     
     time.sleep(1)
     res_dict = json.loads(oh.read_addr(fin_addr))
