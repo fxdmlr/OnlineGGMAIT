@@ -29,7 +29,7 @@ def main(init_addr, name):
     st = time.time()
     usr_inp = input(question)
     end = time.time()
-    oh.create_new_file(json.dumps({"input" : usr_inp, "time" : time.time()}), game_dict[me])
+    oh.create_new_file(json.dumps({"input" : usr_inp, "time" : end-st}), game_dict[me])
     if usr_inp == answer:
         print("Correct.")
     else:
